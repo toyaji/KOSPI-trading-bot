@@ -32,5 +32,5 @@ for i in kospi:
     f.write("%d,%s,%s,%s,%d,%d,%d,%s\n" % (int(i[0]), str(i[1]),  str(i[2]), str(i[3]), int(i[4]), int(i[5]), int(i[6]), str(i[7])))
 f.close()
 
-ko = pandas.read_csv('c:\\Users\\user\\PycharmProjects\\kospi.csv', encoding = "ISO-8859-1")
+ko = pandas.read_csv('c:\\Users\\user\\PycharmProjects\\kospi.csv', encoding = "uft8")
 print(ko)
