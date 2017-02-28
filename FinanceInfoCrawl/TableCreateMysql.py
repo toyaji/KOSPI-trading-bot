@@ -1,7 +1,7 @@
 import pymysql
 
 def create_tables(tab):
-    """ create tables in the PostgreSQL database"""
+    """ create tables in the SQL database"""
     commands ="""
         CREATE TABLE %s (
             date DATE PRIMARY KEY NOT NULL,
