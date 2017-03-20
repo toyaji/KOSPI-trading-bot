@@ -15,28 +15,37 @@ def listfetching():
             exit()
     return codeList
 
+
 def newStock():
+    """기존 종목 리스트 csv 로 보관하고 있다가
+    대신증권 종목 리스트와 비교해서 새로운 종목 있으면 테이블 추가
+    사라진 종목 있으면 테이블 삭제하는 기능"""
+
+    # 신규 리스트 접속해서 가져오기
     newlist = list(listfetching())
-    file = './Listnow.csv'
-
+    newset = set(newlist)
     # 기존 파일에서 리스트 가져오기
+    file = './Listnow.csv'
     df = pd.read_csv(file, sep='\n', names=['oldlist'])
-    # todo fix comparison " 둘이 비교하면 길이 달라서 에러남"
-    df['newlist'] = newlist
-    print(df.head())
+    oldset = set(df['oldlist'])
 
-    # 이전내역하고 현재 내역 비교하기
-    mask = df['oldlist'] != df['newlist']
-    extract1 = df['newlist'][mask]
-    extract2 = df['oldlist'][mask]
+    print('기존 종목 수 : %d  //  현재 종목 수 : %d' % (len(df), len(newlist)))
+    change = {}
 
-    # 서로 비교해서 입력하기
-    if len(np.array(extract1)) != 0 & len(np.array(extract2)) != 0:
-        with open(file, 'w') as f:
-            for code in np.array(df['newlist']):
-                f.write(code + '\n')
+    # 뭐가 없어 졌는지 찾기
+    add = newset - oldset
+    sub = oldset - newset
+    print('신규종목 : %s  //  폐지종목 : %s' % (add, sub))
 
+    # 테이블 만들고 삭제하기
+    from FinanceInfoCrawl.TableCreateMysql import create_tables, table_drop
+    for code in add: create_tables(code)
+    for code in sub: table_drop(code)
 
+    # 변경 사항 파일에 쓰기
+    with open(file, 'w') as f:
+        for code in newlist:
+            f.write(code + '\n')
 
 
 
