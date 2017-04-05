@@ -1,8 +1,10 @@
 import requests
 import pandas as pd
 import time
-#코빗 토큰 얻기 - 다이렉트 인증으로 바이 안에다가 유저명이랑 비번 다 집어넣음
+from datetime import datetime, timedelta
+from os.path import isfile
 
+#코빗 토큰 얻기 - 다이렉트 인증으로 바이 안에다가 유저명이랑 비번 다 집어넣음
 client_id = 'wvOfwR3yvlw5WvAn74ro1pRWStb8HT3450NprLlUe1PTYl1ZccoPUtSlxwRGe'
 client_secret = 'Dqt8gWcJd1eCtVfotr8Z5EXC0nowmFVbs9vWwrmhsM1A8lrzeXDfvEior1OcV'
 username = 'happytoday83@naver.com'
@@ -39,8 +41,17 @@ def get_ticker():
     respon = requests.get("https://api.korbit.co.kr/v1/ticker/detailed", params=params)
 
     info = respon.json()
-    print(info)
     return info
+
+def concat_and_save():
+    global data
+    hourdata = pd.concat(data)
+    hourdata = hourdata.set_index(['timestamp'])
+    t = time.strftime('%Y%m%d')
+    header = isfile(r'./%s.csv' % t)
+    with open(r'./%s.csv' % t, 'a') as f:
+        hourdata.to_csv(f, header=not header)
+        f.close()
 
 
 
@@ -56,25 +67,22 @@ if __name__ == '__main__':
         df = pd.DataFrame(tick, index=[0])
 
         # 데이터 프레임으로 전환하고 한시간마다 합쳐서 csv 로 로딩하고 비우기
-        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+        df['ordertime'] = pd.to_datetime(df['timestamp'], unit='ms')
+        df['timestamp'] = datetime.now()
         data.append(df)
 
+
         # 날짜 넘어갈때 지금까지 쌓은 녀석 저장하고 새 파일 만들기
-        # todo 여기에다가 날짜 넘어갈때 색인가지고 셋팅하는법 설정해야함
-        print(df['timestamp'])
-        # if df['timestamp']time.strftime()
+        now = datetime.now()
+        delta = timedelta(0, 30)
+        if now.day < (now + delta).day:
+            concat_and_save()
+            data = []; flag = 1
+        elif flag >= 10:
+            concat_and_save()
+            data = []; flag = 1
 
         # 30초 재우고 플래그 올리기
+        print(flag)
         time.sleep(30)
         flag += 1
-
-
-        if flag >= 10:
-            hourdata = pd.concat(data)
-            hourdata = hourdata.set_index(['timestamp'])
-            t = time.strftime('%Y%m%d')
-            with open(r'./%s.csv' % t, 'a') as f:
-                hourdata.to_csv(f, header=False)
-
-            flag = 0
-
