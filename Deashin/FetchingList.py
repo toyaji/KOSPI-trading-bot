@@ -27,10 +27,10 @@ for i, code in enumerate(codeList):
     kospi.append([i, code, secondCode, name, pricenow, per, eps, recentreport])
 
 
-f = open('c:\\Users\\user\\PycharmProjects\\kospi.csv', "w")
+f = open('c:\\Users\\paul\\PycharmProjects\\kospi.csv', "w")
 for i in kospi:
     f.write("%d,%s,%s,%s,%d,%d,%d,%s\n" % (int(i[0]), str(i[1]),  str(i[2]), str(i[3]), int(i[4]), int(i[5]), int(i[6]), str(i[7])))
 f.close()
 
-ko = pandas.read_csv('c:\\Users\\user\\PycharmProjects\\kospi.csv', encoding = "ISO-8859-1")
+ko = pandas.read_csv('c:\\Users\\paul\\PycharmProjects\\kospi.csv', encoding = "ISO-8859-1")
 print(ko)
