@@ -50,4 +50,5 @@ def newStock():
 
 
 if __name__ == '__main__':
-    newStock()
+    listfetching()
+    # newStock()
