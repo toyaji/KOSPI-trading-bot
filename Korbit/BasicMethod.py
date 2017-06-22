@@ -54,7 +54,6 @@ def concat_and_save():
         f.close()
 
 
-
 if __name__ == '__main__':
     #tokendata = get_token()
     #get_userinfo(tokendata)
